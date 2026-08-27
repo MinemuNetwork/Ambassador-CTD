@@ -7,7 +7,6 @@ import com.velocitypowered.api.event.connection.PostLoginEvent;
 import com.velocitypowered.api.event.player.*;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.util.ModInfo;
-import com.velocitypowered.proxy.VelocityServer;
 import com.velocitypowered.proxy.connection.client.ConnectedPlayer;
 import com.velocitypowered.proxy.network.Connections;
 import com.velocitypowered.proxy.protocol.StateRegistry;
@@ -30,8 +29,6 @@ public class VelocityEventHandler {
   public void onPostLoginEvent(PostLoginEvent event, Continuation continuation) {
     ConnectedPlayer player = (ConnectedPlayer) event.getPlayer();
     if (player.getPhase() instanceof VelocityForgeClientConnectionPhase) {
-      ((VelocityServer) Ambassador.getInstance().server).getPlayerRegistry().unregisterConnection(player);
-
       player.getConnection().eventLoop().submit(() -> {
         player.getConnection().setState(StateRegistry.LOGIN);
 
