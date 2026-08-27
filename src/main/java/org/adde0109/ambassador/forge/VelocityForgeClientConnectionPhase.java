@@ -4,6 +4,7 @@ import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 import com.velocitypowered.api.util.ModInfo;
 import com.velocitypowered.proxy.VelocityServer;
 import com.velocitypowered.proxy.connection.MinecraftConnection;
+import com.velocitypowered.proxy.connection.client.PlayerRegistry;
 import com.velocitypowered.proxy.connection.backend.VelocityServerConnection;
 import com.velocitypowered.proxy.connection.client.ClientConnectionPhase;
 import com.velocitypowered.proxy.connection.client.ConnectedPlayer;
@@ -92,7 +93,13 @@ public enum VelocityForgeClientConnectionPhase implements ClientConnectionPhase 
       connection.setState(StateRegistry.PLAY);
       //Plugins may now send packets to client
       player.getConnection().getChannel().pipeline().remove(ForgeConstants.PLUGIN_PACKET_QUEUE);
-      ((VelocityServer) Ambassador.getInstance().server).registerConnection(player);
+      PlayerRegistry registry = ((VelocityServer) Ambassador.getInstance().server).getPlayerRegistry();
+      registry.registerConnection(player).thenAccept(registered -> {
+        if (registered) {
+          //Velocity-CTD: complete the login so the identity-lock watchdog is cancelled.
+          registry.finalizeLogin(player);
+        }
+      });
     }
 
     @Override
