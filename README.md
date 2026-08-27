@@ -1,5 +1,7 @@
 # Ambassador
 
+> This fork has support for Velocity-CTD in version 4.1.0, it works stably according to the tests carried out, but it is still under development to adapt it perfectly to Velocity-CTD.
+
 This is a Velocity plugin that makes it possible to host a modern Forge server behind a Velocity proxy!
 
 Unlike other solutions, this plugin does not require any special modifications to the backend server nor the client. (The player doesn't need to do anything)
