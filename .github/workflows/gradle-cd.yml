@@ -1,0 +1,47 @@
+name: Java CD with Gradle
+
+on:
+  push:
+    tags:
+      - "v-*"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+
+      # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
+      # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
+
+      - name: Build with Gradle Wrapper
+        run: ./gradlew build
+
+      - name: Crear Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
+          body: "Artefactos generados automáticamente"
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Subir todos los .jar generados
+        run: |
+          for file in build/libs/*.jar; do
+            echo "Subiendo $file..."
+            gh release upload "${{ github.ref_name }}" "$file" --repo "${{ github.repository }}" --clobber
+          done
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
