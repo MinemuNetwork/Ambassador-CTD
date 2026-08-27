@@ -30,7 +30,7 @@ public class VelocityEventHandler {
   public void onPostLoginEvent(PostLoginEvent event, Continuation continuation) {
     ConnectedPlayer player = (ConnectedPlayer) event.getPlayer();
     if (player.getPhase() instanceof VelocityForgeClientConnectionPhase) {
-      ((VelocityServer) Ambassador.getInstance().server).unregisterConnection(player);
+      ((VelocityServer) Ambassador.getInstance().server).getPlayerRegistry().unregisterConnection(player);
 
       player.getConnection().eventLoop().submit(() -> {
         player.getConnection().setState(StateRegistry.LOGIN);

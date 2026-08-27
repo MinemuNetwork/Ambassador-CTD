@@ -50,7 +50,7 @@ import static com.velocitypowered.proxy.protocol.packet.brigadier.ArgumentIdenti
 public class Ambassador {
 
   //Don't forget to update checkCompatibleVersion() when changing this value
-  private static final String minVelocityVersion = "velocity-3.3.0-SNAPSHOT-330";
+  private static final String minVelocityVersion = "4.0.0";
 
   public ProxyServer server;
   public final Logger logger;
@@ -138,14 +138,14 @@ public class Ambassador {
     argumentRegistry.setAccessible(true);
     argumentRegistry.invoke(null,ArgumentIdentifier.id("forge:enum", mapSet(MINECRAFT_1_19, 50)), EnumArgumentProperty.class, EnumArgumentPropertySerializer.ENUM);
     argumentRegistry.invoke(null,ArgumentIdentifier.id("forge:modid", mapSet(MINECRAFT_1_19, 51)), ModIdArgumentProperty.class,
-            new ArgumentPropertySerializer<>() {
+            new ArgumentPropertySerializer<ModIdArgumentProperty>() {
               @Override
               public ModIdArgumentProperty deserialize(ByteBuf buf, ProtocolVersion protocolVersion) {
                 return new ModIdArgumentProperty();
               }
 
               @Override
-              public void serialize(Object object, ByteBuf buf, ProtocolVersion protocolVersion) {
+              public void serialize(ModIdArgumentProperty object, ByteBuf buf, ProtocolVersion protocolVersion) {
 
               }
             });
